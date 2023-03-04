@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "expflow"
+version = "0.1.1"
+description = "A Python library for controlling the flow of psychological experiments."
+authors = ["Sam Mathias"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/sammosummo/expflow"
+repository = "https://github.com/sammosummo/expflow"
+documentation = "https://github.com/sammosummo/expflow"
+keywords = ["logging", "mixin", "log", "logger"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+include = [
+    "LICENSE",
+]
+[tool.poetry.dependencies]
+python = "^3.11"
+dataclasses_json = "^0.5.7"
+logmixin = "^0.1.1"
+localnow = "^0.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
