@@ -27,7 +27,7 @@ expflow_dir: Path = Path(tmpdir.name)
 module_logger.debug(f"Expflow data directory set to {expflow_dir}")
 using_compression: bool = False
 module_logger.debug(f"Initially setting using_compression flag to {using_compression}")
-subdirs: list[str] = ["participants", "experiments", "trials", "trash", "logs"]
+subdirs: list[str] = ["Participants", "Experiments", "Trials", "Trash", "Logs"]
 module_logger.debug(f"Subdirectories: {subdirs}")
 module_logger.debug(f"Defining statuses dictionary")
 statuses: dict[str, dict[str, set[str] | str]] = {
@@ -98,7 +98,7 @@ def _get_pdir() -> Path:
         The path to the participant directory.
 
     """
-    return _get_subdir("participants")
+    return _get_subdir("Participants")
 
 
 def _get_edir() -> Path:
@@ -112,7 +112,7 @@ def _get_edir() -> Path:
         The path to the experiment directory.
 
     """
-    return _get_subdir("experiments")
+    return _get_subdir("Experiments")
 
 
 def _get_tdir() -> Path:
@@ -126,7 +126,7 @@ def _get_tdir() -> Path:
         The path to the trial directory.
 
     """
-    return _get_subdir("trials")
+    return _get_subdir("Trials")
 
 
 def _get_trashdir() -> Path:
@@ -140,7 +140,7 @@ def _get_trashdir() -> Path:
         The path to the trash directory.
 
     """
-    return _get_subdir("trash")
+    return _get_subdir("Trash")
 
 
 def _get_ldir() -> Path:
@@ -154,7 +154,7 @@ def _get_ldir() -> Path:
         The path to the logs directory.
 
     """
-    return _get_subdir("logs")
+    return _get_subdir("Logs")
 
 
 def set_expflow_dir(path: str | Path) -> None:

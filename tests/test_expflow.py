@@ -43,19 +43,19 @@ class TestFilesAndPaths(TestCase, LogMixin):
     def test_set_expflow_dir(self):
         expflow.set_expflow_dir(self.tmpdir.name)
         self.assertEqual(
-            expflow._get_pdir(), pathlib.Path(self.tmpdir.name, "participants"),
+            expflow._get_pdir(), pathlib.Path(self.tmpdir.name, "Participants"),
         )
         self.assertEqual(
-            expflow._get_edir(), pathlib.Path(self.tmpdir.name, "experiments"),
+            expflow._get_edir(), pathlib.Path(self.tmpdir.name, "Experiments"),
         )
         self.assertEqual(
-            expflow._get_tdir(), pathlib.Path(self.tmpdir.name, "trials"),
+            expflow._get_tdir(), pathlib.Path(self.tmpdir.name, "Trials"),
         )
         self.assertEqual(
-            expflow._get_ldir(), pathlib.Path(self.tmpdir.name, "logs"),
+            expflow._get_ldir(), pathlib.Path(self.tmpdir.name, "Logs"),
         )
         self.assertEqual(
-            expflow._get_trashdir(), pathlib.Path(self.tmpdir.name, "trash"),
+            expflow._get_trashdir(), pathlib.Path(self.tmpdir.name, "Trash"),
         )
         self.assertTrue(expflow._get_pdir().exists())
         self.assertTrue(expflow._get_edir().exists())

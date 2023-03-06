@@ -89,8 +89,8 @@ previously.
   
 ```python  
 for i in range(1, 10):  
-    (expflow.USER_DIR / "participants" / f"example_p{i}.json").unlink(True)  
-    (expflow.USER_DIR / "experiments" / f"example_p{i}.example_e1.json").unlink(True) 
+    (expflow.USER_DIR / "Participants" / f"example_p{i}.json").unlink(True)  
+    (expflow.USER_DIR / "Experiments" / f"example_p{i}.example_e1.json").unlink(True) 
 ```  
   
 ### Participants 
