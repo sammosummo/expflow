@@ -47,14 +47,14 @@ files = [
 
 [[package]]
 name = "logmixin"
-version = "0.1.3"
+version = "0.1.4"
 description = "Defines a mixin class that adds a convenient get_logger method."
 category = "main"
 optional = false
 python-versions = ">=3.6,<4.0"
 files = [
-    {file = "logmixin-0.1.3-py3-none-any.whl", hash = "sha256:92b9de238b2d0a97b66d8131e7ccf76cdb3b57f05dd93d9bfa725805b0b54d5c"},
-    {file = "logmixin-0.1.3.tar.gz", hash = "sha256:a111466a4aff6efcbdf01b184c971731b221a782aeff3568f4cf74e76168136f"},
+    {file = "logmixin-0.1.4-py3-none-any.whl", hash = "sha256:707aff0810d3be33eb119e2355ec9ce4fdd2aeba5249d7a5492bb95e65c5b005"},
+    {file = "logmixin-0.1.4.tar.gz", hash = "sha256:1d8db38dc053536de96fcfc021fd7db29b5694a0a25799d17602e7a1855c197c"},
 ]
 
 [[package]]
@@ -133,4 +133,4 @@ typing-extensions = ">=3.7.4"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.6"
-content-hash = "68b3ee72d8afb9fb702e320c53d37de71fa3535b80ab6a60f41e60e32e148ff0"
+content-hash = "c80e16fd2b3ac778aaa567a11f7f98c3518f2cbb93881fea7228478611b1db5c"

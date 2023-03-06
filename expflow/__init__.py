@@ -11,4 +11,5 @@ from expflow.expflow import (
     Trial,
     WrongClassError,
     ParticipantDoesNotExistError,
+    is_valid_id,
 )

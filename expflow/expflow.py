@@ -1,5 +1,6 @@
 import datetime
 import gzip
+import re
 
 from dataclasses import dataclass, field
 from datetime import datetime as dt
@@ -187,6 +188,19 @@ def get_expflow_dir() -> Path:
         logger.warning("Using temporary directory; data will be lost when program ends")
         warn("Using temporary directory; data will be lost when program ends")
     return expflow_dir
+
+
+def is_valid_id(id_: str) -> bool:
+    """Checks if a string is a valid expflow ID.
+
+    Args:
+        id_: The string to check.
+
+    Returns:
+        True if the string is a valid expflow ID, False otherwise.
+
+    """
+    return bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
 
 
 def _pe(p: Path | None) -> str | None:
@@ -596,6 +610,13 @@ class Participant(_SerialisationMixin, _ParReqFieldsMixin):
     comments: str | None = field(default=None, **kw)
     group: str | None = field(default=None, **kw)
 
+    def __post_init__(self):
+        super().__post_init__()
+        if not is_valid_id(self.participant_id):
+            msg: str = f"Invalid participant ID: {self.participant_id}"
+            self.get_logger().error(msg)
+            raise ValueError(msg)
+
 
 @dataclass
 class _ExampleParticipantReqFields:
@@ -916,6 +937,14 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
         super().__post_init__()
         self._check_participant_exists()
         self._check_experiment_wasnt_interrupted()
+        if not is_valid_id(self.participant_id):
+            msg: str = f"Invalid participant ID: {self.participant_id}"
+            self.get_logger().error(msg)
+            raise ValueError(msg)
+        if not is_valid_id(self.experiment_id):
+            msg: str = f"Invalid experiment ID: {self.experiment_id}"
+            self.get_logger().error(msg)
+            raise ValueError(msg)
 
     def _check_participant_exists(self):
         logger: Logger = self.get_logger()
