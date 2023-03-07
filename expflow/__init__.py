@@ -12,4 +12,6 @@ from expflow.expflow import (
     WrongClassError,
     ParticipantDoesNotExistError,
     is_valid_id,
+    get_participant_ids,
+    get_experiment_ids,
 )
