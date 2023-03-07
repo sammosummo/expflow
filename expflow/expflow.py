@@ -1120,11 +1120,11 @@ class ParticipantDoesNotExistError(FileNotFoundError):
     pass
 
 
-def get_participant_ids() -> list[str]:
+def get_participant_ids() -> set[str]:
     """Get a list of participant IDs."""
-    return [str(p).split(".")[0] for p in _get_pdir().glob("*.json*")]
+    return {str(p).split(".")[0] for p in _get_pdir().glob("*.json*")}
 
 
-def get_experiment_ids() -> list[str]:
+def get_experiment_ids() -> set[str]:
     """Get a list of experiment IDs."""
-    return [str(e).split(".")[1] for e in _get_edir().glob("*.json*")]
+    return {str(e).split(".")[1] for e in _get_edir().glob("*.json*")}
