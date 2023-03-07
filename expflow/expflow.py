@@ -1120,11 +1120,14 @@ class ParticipantDoesNotExistError(FileNotFoundError):
     pass
 
 
-def get_participant_ids() -> set[str]:
+def get_participant_ids() -> list[str]:
     """Get a list of participant IDs."""
-    return {p.stem for p in _get_pdir().glob("*.json*")}
+
+    return [f.stem.replace(".json", "") for f in _get_pdir().glob("*.json*")]
 
 
-def get_experiment_ids() -> set[str]:
+def get_experiment_ids() -> list[str]:
     """Get a list of experiment IDs."""
-    return {e.stem.split(".")[1] for e in _get_edir().glob("*.json*")}
+    return list(
+        {f.stem.replace(".json", "").split(".")[0] for f in _get_edir().glob("*.json*")}
+    )
