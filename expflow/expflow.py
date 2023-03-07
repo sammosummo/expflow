@@ -15,7 +15,7 @@ from warnings import warn
 
 from dataclasses_json import DataClassJsonMixin, config
 from localnow import now
-from logmixin import LogMixin
+from logmixin import get_logger, LogMixin
 
 module_logger: Logger = getLogger(__name__)
 module_logger.debug(f"Importing {__name__} from {__file__}")
@@ -200,7 +200,12 @@ def is_valid_id(id_: str) -> bool:
         True if the string is a valid expflow ID, False otherwise.
 
     """
-    return bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
+    get_logger().debug(
+        f"Checking if {id_} is a valid ID (must be at least 4 characters "
+        f"long and contain only letters, numbers, underscores, and "
+        f"dashes)"
+    )
+    return len(id_) > 3 and bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
 
 
 def _pe(p: Path | None) -> str | None:

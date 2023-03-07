@@ -205,7 +205,7 @@ class TestExperiment(TestCase, LogMixin):
     def test_experiment_statuses_4(self):
         expflow.Participant("participant_id_7")
         trials = [expflow.Trial(trial_number=i) for i in range(3)]
-        e = expflow.Experiment("participant_id_7", "a", trials=trials)
+        e = expflow.Experiment("participant_id_7", "abcd", trials=trials)
         self.assertTrue(e.is_pending)
         for trial in e:
             self.assertTrue(e.is_running)
@@ -219,7 +219,7 @@ class TestExperiment(TestCase, LogMixin):
     def test_experiment_statuses_5(self):
         expflow.Participant("participant_id_8")
         trials = [expflow.Trial(trial_number=i) for i in range(10)]
-        e = expflow.Experiment("participant_id_8", "a", trials=trials)
+        e = expflow.Experiment("participant_id_8", "abcd", trials=trials)
         self.assertTrue(e.is_pending)
         for trial in e:
             self.assertTrue(e.is_running)
@@ -236,7 +236,7 @@ class TestExperiment(TestCase, LogMixin):
     def test_experiment_statuses_6(self):
         expflow.Participant("participant_id_9")
         trials = [expflow.Trial(trial_number=i) for i in range(10)]
-        e = expflow.Experiment("participant_id_9", "a", trials=trials)
+        e = expflow.Experiment("participant_id_9", "abcd", trials=trials)
         self.assertTrue(e.is_pending)
         for trial in e:
             self.assertTrue(e.is_running)
@@ -258,7 +258,7 @@ class TestExperiment(TestCase, LogMixin):
     def test_experiment_statuses_7(self):
         expflow.Participant("participant_id_10")
         trials = [expflow.Trial(trial_number=i) for i in range(10)]
-        e = expflow.Experiment("participant_id_10", "a", trials=trials)
+        e = expflow.Experiment("participant_id_10", "abcd", trials=trials)
         self.assertTrue(e.is_pending)
         for trial in e:
             self.assertTrue(e.is_running)
