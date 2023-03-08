@@ -271,98 +271,16 @@ class TestExperiment(TestCase, LogMixin):
         self.assertTrue(e.is_timed_out)
         self.assertRaises(ValueError, next, e)
 
-
-            # def test_experiment_statuses_3(self):
-    #     p = expflow.Participant("participant_id_4")
-    #     e = expflow.Experiment("participant_id_4", "experiment_id_4")
-    #     self.assertRaises(NotImplementedError, e.skip)
-    #     e.skip_()
-    #     self.assertEqual(e.status, "skipped")
-    #     self.assertTrue(e.is_skipped)
-    #     self.assertRaises(ValueError, e.run)
-    #     self.get_logger().debug(e.to_json())
-
-    # def test_experiment_serialisation(self):
-    #     p = expflow.Participant("participant_id_5")
-    #     e = expflow.Experiment("participant_id_5", "experiment_id_5")
-    #     j = e.to_json()
-    #     self.get_logger().debug(j)
-    #     a = expflow.Experiment.from_json(j)
-    #     self.assertTrue(e == a)
-    #     self.assertTrue(e.datetime_last_saved == a.datetime_last_saved)
-    #     a.save()
-    #     self.assertTrue(a.datetime_last_saved > e.datetime_last_saved)
-    #
-    # def test_experiment_with_trials(self):
-    #     trials = [expflow.Trial() for _ in range(10)]
-    #     p = expflow.Participant("participant_id_6")
-    #     e = expflow.Experiment("participant_id_6", "experiment_id_6", trials=trials)
-    #     self.assertEqual(e.trials, trials)
-    #     self.assertEqual(e.status, "pending")
-    #     j = e.to_json()
-    #     self.get_logger().debug(j)
-    #     a = expflow.Experiment.from_json(j)
-    #     self.assertTrue(e == a)
-    #     self.assertTrue(e.datetime_last_saved == a.datetime_last_saved)
-    #     a.save()
-    #     self.assertTrue(a.datetime_last_saved > e.datetime_last_saved)
-    #
-    # def test_experiment_is_iterable(self):
-    #     trials = [expflow.Trial() for _ in range(10)]
-    #     p = expflow.Participant("participant_id_7")
-    #     e = expflow.Experiment("participant_id_7", "experiment_id_7", trials=trials)
-    #     self.assertEqual(e.trial_index, None)
-    #     self.assertRaises(TypeError, lambda: e.current_trial)
-    #     self.assertTrue(e.is_pending)
-    #     for i, trial in enumerate(e):
-    #         self.assertEqual(e.trial_index, i)
-    #         self.assertTrue(e.is_running)
-    #         self.assertTrue(trial.is_running)
-    #         self.assertTrue(trial in trials)
-    #         self.assertEqual(trial, trials[i])
-    #         self.assertEqual(e.current_trial, trials[i])
-    #         if i > 0:
-    #             self.assertEqual(e.previous_trial, trials[i-1])
-    #             self.assertTrue(e.previous_trial.is_finished)
-    #     self.assertRaises(TypeError, lambda: e.current_trial)
-    #     self.assertTrue(e.is_finished)
-    #     self.get_logger().debug(e.to_json())
-    #
-    # def test_run_experiment(self):
-    #     trials = [expflow.Trial() for _ in range(10)]
-    #     p = expflow.Participant("participant_id_8")
-    #     e = expflow.Experiment("participant_id_8", "experiment_id_8", trials=trials)
-    #     self.assertEqual(e.trial_index, None)
-    #     self.assertTrue(e.is_pending)
-    #     self.assertTrue(e.trials[0].is_pending)
-    #     for i, t in enumerate(e):
-    #         self.assertTrue(e.is_running)
-    #         self.assertTrue(t.is_running)
-    #         self.assertTrue(e.current_trial.is_running)
-    #         self.assertEqual(e.trial_index, i)
-    #         self.assertEqual(e.current_trial, t)
-    #     self.assertTrue(e.is_finished)
-    #     self.assertTrue(e.trials[-1].is_finished)
-    #     self.get_logger().debug(e.to_json())
-    #
-    # def test_run_experiment_2(self):
-    #     trials = [expflow.Trial() for _ in range(10)]
-    #     p = expflow.Participant("participant_id_8")
-    #     e = expflow.Experiment("participant_id_8", "experiment_id_8", trials=trials)
-    #     self.assertEqual(e.trial_index, None)
-    #     self.assertTrue(e.is_pending)
-    #     self.assertTrue(e.trials[0].is_pending)
-    #     for i, t in enumerate(e):
-    #         self.assertTrue(e.is_running)
-    #         self.assertTrue(t.is_running)
-    #         self.assertTrue(e.current_trial.is_running)
-    #         self.assertEqual(e.trial_index, i)
-    #         if e.is_paused or e.is_skipped:
-    #             break
-    #     self.assertTrue(e.is_finished)
-    #     self.assertTrue(e.trials[-1].is_finished)
-    #     self.get_logger().debug(e.to_json())
-
-
+    def test_compression(self):
+        expflow.using_compression = True
+        p = expflow.Participant("participant_id_z_1")
+        e = expflow.Experiment("participant_id_z_1", "experiment_id_4")
+        self.assertTrue(str(p.path).endswith(".gz"))
+        self.assertTrue(str(e.path).endswith(".gz"))
+        expflow.using_compression = False
+        p = expflow.Participant("participant_id_z_2")
+        e = expflow.Experiment("participant_id_z_2", "experiment_id_4")
+        self.assertTrue(str(p.path).endswith(".json"))
+        self.assertTrue(str(e.path).endswith(".json"))
 
 

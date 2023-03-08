@@ -350,7 +350,7 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         **kw,
     )
     datetime_last_saved: dt | None = field(default=None, **kw)
-    compression: bool = field(default=using_compression, **kw)
+    compression: bool = field(default_factory=lambda: using_compression, **kw)
 
     def __post_init__(self) -> None:
         """Performs numerous validation checks to ensure the object was created or loaded
