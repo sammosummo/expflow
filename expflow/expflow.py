@@ -3,7 +3,21 @@ import gzip
 import re
 
 from dataclasses import dataclass, field
-from datetime import datetime as dt
+from datetime import date, datetime as dt
+
+"""Note about datetime.
+
+I find this module super confusing. The module called datetime defines classes called
+date and datetime, and the class datetime defines a method called date. Therefore, if
+you do `import datetime` and then type `datetime.date`, you get the class date, which
+is the correct one for typing dates. If you do `from datetime import datetime` and then
+type `datetime.date`, you get the method, which isn't the correct one for typing dates.
+My solution is to import the classes date and datetime from the module. Also note that
+dataclasses-json doesn't support encoding or decoding of datetime.date into JSON, so
+functions need to be defined explicitly for that purpose.
+
+"""
+
 from getpass import getuser
 from logging import getLogger, Logger
 from os import getcwd
@@ -608,7 +622,10 @@ class Participant(_SerialisationMixin, _ParReqFieldsMixin):
 
     """
 
-    dob: datetime.date | None = field(default=None, **kw)
+    dob: date | None = field(default=None, **kw, metadata=config(
+            encoder=date.isoformat,
+            decoder=date.fromisoformat,
+    ))  # not `datetime.date` ... see note!
     age: float | int | None = field(default=None, **kw)
     gender: str | None = field(default=None, **kw)
     language: str | None = field(default=None, **kw)

@@ -1,8 +1,9 @@
 import dataclasses
-import itertools
 import logging
 import tempfile
 import pathlib
+
+from datetime import date, datetime as dt
 from unittest import TestCase
 
 from logmixin import LogMixin
@@ -282,5 +283,13 @@ class TestExperiment(TestCase, LogMixin):
         e = expflow.Experiment("participant_id_z_2", "experiment_id_4")
         self.assertTrue(str(p.path).endswith(".json"))
         self.assertTrue(str(e.path).endswith(".json"))
+
+    def test_dob(self):
+        d = date(1990, 1, 1)
+        p = expflow.Participant("participant_id_4", dob=d)
+        self.assertEqual(p.dob, d)
+        del p
+        p = expflow.Participant.load("participant_id_4")
+        self.assertEqual(p.dob, d)
 
 
