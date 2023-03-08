@@ -623,8 +623,8 @@ class Participant(_SerialisationMixin, _ParReqFieldsMixin):
     """
 
     dob: date | None = field(default=None, **kw, metadata=config(
-            encoder=date.isoformat,
-            decoder=date.fromisoformat,
+            encoder=lambda x: date.isoformat(x) if x is not None else None,
+            decoder=lambda x: date.fromisoformat(x) if x is not None else None,
     ))  # not `datetime.date` ... see note!
     age: float | int | None = field(default=None, **kw)
     gender: str | None = field(default=None, **kw)
