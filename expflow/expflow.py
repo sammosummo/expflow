@@ -1146,5 +1146,15 @@ def get_participant_ids() -> list[str]:
 def get_experiment_ids() -> list[str]:
     """Get a list of experiment IDs."""
     return list(
-        {f.stem.replace(".json", "").split(".")[0] for f in _get_edir().glob("*.json*")}
+        {f.stem.replace(".json", "").split(".")[1] for f in _get_edir().glob("*.json*")}
+    )
+
+
+def get_participated_in(participant_id: str) -> list[str]:
+    """Get a list of experiment IDs that a participant has participated in."""
+    return list(
+        {
+            f.stem.replace(".json", "").split(".")[1]
+            for f in _get_edir().glob(f"{participant_id}.*.json*")
+        }
     )

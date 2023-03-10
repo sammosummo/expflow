@@ -286,10 +286,14 @@ class TestExperiment(TestCase, LogMixin):
 
     def test_dob(self):
         d = date(1990, 1, 1)
-        p = expflow.Participant("participant_id_4", dob=d)
+        p = expflow.Participant("participant_id_x4", dob=d)
         self.assertEqual(p.dob, d)
         del p
-        p = expflow.Participant.load("participant_id_4")
+        p = expflow.Participant.load("participant_id_x4")
         self.assertEqual(p.dob, d)
 
 
+    def test_get_participated_in(self):
+        p = expflow.Participant("participant_id_x5")
+        e = expflow.Experiment("participant_id_x5", "experiment_id_5")
+        self.assertEqual(expflow.get_participated_in(p.participant_id), [e.experiment_id])

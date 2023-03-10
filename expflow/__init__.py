@@ -14,4 +14,5 @@ from expflow.expflow import (
     is_valid_id,
     get_participant_ids,
     get_experiment_ids,
+    get_participated_in,
 )
