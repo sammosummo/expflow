@@ -114,6 +114,7 @@ class TestParticipant(TestCase, LogMixin):
         p2.delete()
         self.assertRaises(FileNotFoundError, expflow.Participant.load, "test5")
 
+
 class TestTrial(TestCase, LogMixin):
     def test_trial(self):
         t = expflow.Trial()
@@ -306,3 +307,11 @@ class TestExperiment(TestCase, LogMixin):
         p = expflow.Participant("participant_id_x5")
         e = expflow.Experiment("participant_id_x5", "experiment_id_5")
         self.assertEqual(expflow.get_participated_in(p.participant_id), [e.experiment_id])
+
+    def test_experiment_delete(self):
+        p = expflow.Participant("participant_id_x6")
+        e = expflow.Experiment("participant_id_x6", "experiment_id_6")
+        self.assertTrue(e.path.exists())
+        p.delete()
+        e.delete()
+        self.assertFalse(e.path.exists())

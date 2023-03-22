@@ -370,11 +370,11 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         """Performs numerous validation checks to ensure the object was created or loaded
         properly."""
         super().__post_init__()
+        self.no_save_on_gc: bool = False
         self.path: Path = self._get_default_path()
         if self.datetime_last_saved is None:
             self._ensure_default_path_doesnt_exist()
             self.save()
-        self.no_save_on_gc: bool = False
 
     def _get_default_path(self) -> Path | None:
         """Returns the default path of the object."""
@@ -557,7 +557,8 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         else:
             logger.warning(f"{self.path} does not exist")
         logger.debug("Since we deleted the file, we should turn off saving during g.c.")
-        self.no_save_on_gc = True
+        if self.no_save_on_gc is False:
+            self.no_save_on_gc = True
 
     def __del__(self):
         logger: Logger = self.get_logger()
