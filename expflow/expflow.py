@@ -370,10 +370,11 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         """Performs numerous validation checks to ensure the object was created or loaded
         properly."""
         super().__post_init__()
-        self.path = self._get_default_path()
+        self.path: Path = self._get_default_path()
         if self.datetime_last_saved is None:
             self._ensure_default_path_doesnt_exist()
             self.save()
+        self.no_save_on_gc: bool = False
 
     def _get_default_path(self) -> Path | None:
         """Returns the default path of the object."""
@@ -544,11 +545,26 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         else:
             cls.get_logger().warning("Cannot save if without a default path")
 
+    def delete(self) -> None:
+        """Delete the file at the default path."""
+        logger: Logger = self.get_logger()
+        if self.path is None:
+            logger.warning("Cannot delete if without a default path")
+            return
+        if self.path.exists():
+            self.path.unlink()
+            logger.info(f"Deleted {self.path}")
+        else:
+            logger.warning(f"{self.path} does not exist")
+        logger.debug("Since we deleted the file, we should turn off saving during g.c.")
+        self.no_save_on_gc = True
+
     def __del__(self):
-        self.get_logger().info(f"Deleting {self}")
+        self.get_logger().info(f"Garbage collecting {self}")
         try:
-            if self.path is not None:
-                if self.path.exists():  # prevents saving on g.c. if we removed the file
+            if self.path is not None and self.path.exists():
+                if not self.no_save_on_gc:
+                    self.get_logger().info(f"Saving {self} before garbage collection")
                     self.save()
         except ImportError:
             pass
