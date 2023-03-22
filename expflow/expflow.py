@@ -631,6 +631,7 @@ class Participant(_SerialisationMixin, _ParReqFieldsMixin):
     language: str | None = field(default=None, **kw)
     comments: str | None = field(default=None, **kw)
     group: str | None = field(default=None, **kw)
+    temporary_participant: bool = field(default=False, **kw)
 
     def __post_init__(self):
         super().__post_init__()
