@@ -104,6 +104,16 @@ class TestParticipant(TestCase, LogMixin):
         p2.save()
         self.assertGreater(p2.datetime_last_saved, p.datetime_last_saved)
 
+    def test_delete(self):
+        p = expflow.Participant(participant_id="test5")
+        p.save()
+        p2 = expflow.Participant.load(participant_id="test5")
+        p.delete()
+        del p
+        p2.save()
+        p2.delete()
+        self.assertRaises(FileNotFoundError, expflow.Participant.load, "test5")
+
 class TestTrial(TestCase, LogMixin):
     def test_trial(self):
         t = expflow.Trial()
@@ -291,7 +301,6 @@ class TestExperiment(TestCase, LogMixin):
         del p
         p = expflow.Participant.load("participant_id_x4")
         self.assertEqual(p.dob, d)
-
 
     def test_get_participated_in(self):
         p = expflow.Participant("participant_id_x5")

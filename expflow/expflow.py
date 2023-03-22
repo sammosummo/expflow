@@ -560,13 +560,18 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         self.no_save_on_gc = True
 
     def __del__(self):
-        self.get_logger().info(f"Garbage collecting {self}")
+        logger: Logger = self.get_logger()
+        logger.info(f"Garbage collecting {self}")
         try:
             if self.path is not None and self.path.exists():
+                logger.debug(f"Path is {self.path} and exists")
                 if not self.no_save_on_gc:
-                    self.get_logger().info(f"Saving {self} before garbage collection")
+                    logger.debug(f"Saving {self} before garbage collection")
                     self.save()
+                else:
+                    logger.debug(f"Not saving {self} before g.c.")
         except ImportError:
+            logger.error("Got an ImportError, probably because we're in a test")
             pass
 
 
