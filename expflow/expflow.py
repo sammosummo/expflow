@@ -219,7 +219,7 @@ def is_valid_id(id_: str) -> bool:
         f"long and contain only letters, numbers, underscores, and "
         f"dashes)"
     )
-    return len(id_) > 3 and bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
+    return len(id_) >= 3 and bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
 
 
 def _pe(p: Path | None) -> str | None:
