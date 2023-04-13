@@ -872,6 +872,7 @@ class Trial(_IdentificationMixin, _StatusMixin, LogMixin, DataClassJsonMixin):
     Trial dataclasses have several optional user-specifiable fields:
         stimulus: Information presented to the participant.
         response: The participant's subsequent behavior.
+        reaction_time: The time taken to respond.
         trial_number: The trial number within the experiment.
         block_number: The block number within the experiment.
         condition: The condition of the trial.
@@ -898,6 +899,7 @@ class Trial(_IdentificationMixin, _StatusMixin, LogMixin, DataClassJsonMixin):
 
     stimulus: str | list | float | int | dict | set | None = None
     response: str | list | float | int | dict | set | None = None
+    reaction_time: float | None = None
     trial_number: int | None = None
     block_number: int | None = None
     condition: str | None = None
