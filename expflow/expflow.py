@@ -979,7 +979,7 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
 
     trial_index: int | None = field(default=None, **kw)
     trials: list[Trial] = field(default_factory=list, **kw)
-    summary: dict[str, int | float] | None = field(default=None, **kw)
+    summary: dict[str, int | float | dt | str] | None = field(default=None, **kw)
 
     def __post_init__(self):
         super().__post_init__()
