@@ -1072,6 +1072,9 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
             if self.previous_trial.is_running:
                 logger.debug("Previous trial was running, so it is now finished")
                 self.previous_trial.finish()
+            else:
+                x = self.previous_trial.status
+                logger.debug(f"Previous trial was {x}, so nothing to update")
 
         logger.debug(f"Updating statuses of current trial if necessary")
         try:
@@ -1084,6 +1087,9 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
             elif self.current_trial.is_skipped:
                 logger.debug("Current trial was skipped, iterating again")
                 next(self)
+            else:
+                x = self.current_trial.status
+                logger.debug(f"Current trial was {x}, so nothing to update")
         except IndexError:
             logger.debug("There is no current trial, so nothing to update")
 
