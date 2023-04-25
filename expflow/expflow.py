@@ -835,6 +835,8 @@ class _StatusMixin(LogMixin):
                 logger.debug("Updating datetimes_paused")
                 pause = (self.datetime_last_paused, then)
                 self.datetimes_paused.append(pause)
+                assert isinstance(self.datetime_last_paused, dt)
+                assert isinstance(then, dt)
             elif old_status == "pending":
                 logger.debug("Updating datetime_started")
                 self.datetime_started = then

@@ -283,6 +283,29 @@ class TestExperiment(TestCase, LogMixin):
         self.assertTrue(e.is_timed_out)
         self.assertRaises(ValueError, next, e)
 
+    def test_experiment_statuses_8(self):
+        expflow.Participant("participant_id_11")
+        trials = [expflow.Trial(trial_number=i) for i in range(10)]
+        e = expflow.Experiment("participant_id_11", "abcd", trials=trials)
+        for trial in e:
+            self.assertTrue(e.is_running)
+            self.show_stimulus(trial.stimulus)
+            trial.response = self.get_response()
+            if e.trial_index == 4:
+                e.pause()
+            if not e.is_running:
+                break
+        del e
+        e = expflow.Experiment.load("participant_id_11", "abcd")
+        self.assertTrue(e.is_paused)
+        self.assertEqual(e.trial_index, 4)
+        for trial in e:
+            self.assertTrue(e.is_running)
+            self.show_stimulus(trial.stimulus)
+            trial.response = self.get_response()
+            self.assertGreaterEqual(e.trial_index, 4)
+        self.assertTrue(e.is_finished)
+
     def test_compression(self):
         expflow.using_compression = True
         p = expflow.Participant("participant_id_z_1")
