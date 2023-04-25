@@ -28,7 +28,7 @@ from uuid import UUID, uuid4
 from warnings import warn
 
 from dataclasses_json import DataClassJsonMixin, config
-from localnow import now
+from localnow import now, tz
 from logmixin import get_logger, LogMixin
 
 module_logger: Logger = getLogger(__name__)
@@ -833,10 +833,10 @@ class _StatusMixin(LogMixin):
         if new_status == "running":
             if old_status == "paused":
                 logger.debug("Updating datetimes_paused")
-                pause = (self.datetime_last_paused, then)
-                self.datetimes_paused.append(pause)
                 assert isinstance(self.datetime_last_paused, dt)
                 assert isinstance(then, dt)
+                pause = (self.datetime_last_paused, then)
+                self.datetimes_paused.append(pause)
             elif old_status == "pending":
                 logger.debug("Updating datetime_started")
                 self.datetime_started = then
@@ -845,7 +845,7 @@ class _StatusMixin(LogMixin):
             self.datetime_finished = then
             self.duration = self.get_duration()
         elif new_status == "paused":
-            logger.debug("Updating datetime_last_pause")
+            logger.debug("Updating datetime_last_paused")
             self.datetime_last_paused = then
 
     def get_duration(self) -> float | None:
@@ -861,6 +861,10 @@ class _StatusMixin(LogMixin):
             return None
         dur = (self.datetime_finished - self.datetime_started).total_seconds()
         for start, end in self.datetimes_paused:
+            if isinstance(start, float):
+                start = dt.fromtimestamp(start, tz=tz)
+            if isinstance(end, float):
+                end = dt.fromtimestamp(end, tz=tz)
             dur -= (end - start).total_seconds()
         return dur
 
