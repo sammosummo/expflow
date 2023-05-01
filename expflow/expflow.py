@@ -1034,16 +1034,24 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
         return self.trials[self.trial_index - 1]
 
     @property
+    def previous_trials(self) -> list[Trial]:
+        return self.trials[: self.trial_index]
+
+    @property
     def next_trial(self) -> Trial:
         return self.trials[self.trial_index + 1]
 
     @property
     def remaining_trials(self) -> list[Trial]:
-        return self.trials[self.trial_index + 1 :]
+        return self.trials[self.trial_index + 1:]
 
     @property
     def is_first_trial(self) -> bool:
         return self.trial_index == 0
+
+    @property
+    def finished_trials(self) -> list[Trial]:
+        return [t for t in self.trials if t.is_finished]
 
     def __del__(self):
         self.get_logger().debug("Deleting experiment object")
