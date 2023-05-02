@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "expflow"
-version = "0.1.30"
+version = "0.1.31"
 description = "A Python library for controlling the flow of psychological experiments."
 authors = ["Sam Mathias"]
 license = "MIT"
