@@ -1108,13 +1108,15 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
         except IndexError:
             logger.debug("There is no current trial, so nothing to update")
 
-        self.save()
+        # self.save()
 
         if self.trial_index >= len(self.trials):
             logger.debug("Experiment finished")
             self.finish()
             self.trial_index = None
             raise StopIteration
+
+        self.save()
 
         return self.current_trial
 
