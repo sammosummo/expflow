@@ -15,4 +15,6 @@ from expflow.expflow import (
     get_participant_ids,
     get_experiment_ids,
     get_participated_in,
+    _get_edir as get_edir,
+    _get_pdir as get_pdir,
 )
