@@ -1,9 +1,9 @@
-import datetime
 import gzip
 import re
 
 from dataclasses import dataclass, field
 from datetime import date, datetime as dt
+from typing import Optional
 
 """Note about datetime.
 
@@ -27,7 +27,7 @@ from tempfile import TemporaryDirectory
 from uuid import UUID, uuid4
 from warnings import warn
 
-from dataclasses_json import DataClassJsonMixin, config
+from dataclasses_json import DataClassJsonMixin, config, cfg
 from localnow import now, tz
 from logmixin import get_logger, LogMixin
 
@@ -73,6 +73,18 @@ statuses: dict[str, dict[str, set[str] | str]] = {
 module_logger.debug(f"Defined statuses dictionary: {statuses}")
 kw = {"repr": False, "compare": False, "hash": False, "init": True}
 USER_DIR: Path = Path.home() / "Expflow"
+
+_enc = cfg.global_config.encoders
+_enc[date] = date.isoformat
+_enc[Optional[date]] = lambda x: None if x is None else date.isoformat(x)
+_enc[Path] = str
+_enc[Optional[Path]] = lambda x: None if x is None else str(x)
+
+_dec = cfg.global_config.decoders
+_dec[date] = date.fromisoformat
+_dec[Optional[date]] = lambda x: None if x is None else date.fromisoformat(x)
+_dec[Path] = Path
+_dec[Optional[Path]] = lambda x: None if x is None else Path(x)
 
 
 def _get_subdir(subdir: str) -> Path:
@@ -222,7 +234,7 @@ def is_valid_id(id_: str) -> bool:
     return len(id_) >= 3 and bool(re.match(r"^[a-zA-Z0-9_\-]+$", id_))
 
 
-def _pe(p: Path | None) -> str | None:
+def _pe(p: Optional[Path]) -> Optional[str]:
     """Private function for encoding strings as Path objects.
 
     Args:
@@ -236,7 +248,7 @@ def _pe(p: Path | None) -> str | None:
         return str(p)
 
 
-def _pd(s: str | None) -> Path | None:
+def _pd(s: Optional[str]) -> Optional[Path]:
     """Private function for decoding strings as Path objects.
 
     Args:
@@ -280,8 +292,8 @@ class _IdentificationMixin(LogMixin):
     username: str = field(default_factory=getuser, **kw)
     datetime_created: dt = field(default_factory=now, **kw)
     uuid: UUID = field(default_factory=uuid4, **kw)
-    class_name: str | None = field(default=None, **kw)
-    base_name: str | None = field(default=None, **kw)
+    class_name: Optional[str] = field(default=None, **kw)
+    base_name: Optional[str] = field(default=None, **kw)
 
     def __post_init__(self) -> None:
         """Sets the class and base names immediately after initialisation if not already
@@ -358,12 +370,8 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
 
     """
 
-    path: Path | None = field(
-        metadata=config(encoder=_pe, decoder=_pd),
-        default=None,
-        **kw,
-    )
-    datetime_last_saved: dt | None = field(default=None, **kw)
+    path: Optional[Path] = field(default=None, **kw)
+    datetime_last_saved: Optional[dt] = field(default=None, **kw)
     compression: bool = field(default_factory=lambda: using_compression, **kw)
 
     def __post_init__(self) -> None:
@@ -377,7 +385,7 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
             self.save()
         self.no_save_on_gc = False
 
-    def _get_default_path(self) -> Path | None:
+    def _get_default_path(self) -> Optional[Path]:
         """Returns the default path of the object."""
         logger: Logger = self.get_logger()
         logger.debug("Getting default path")
@@ -412,7 +420,7 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
     def get_default_path(
         cls,
         participant_id: str,
-        experiment_id: str | None = None,
+        experiment_id: Optional[str] = None,
         compression: bool = using_compression,
     ) -> Path:
         """Returns the default path of the object."""
@@ -473,7 +481,7 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
         self.to_json(self.path)
         logger.info(f"Saved {self} to {self.path}")
 
-    def to_json(self, path: Path | str | None = None, **kwargs) -> None | str:
+    def to_json(self, path: Optional[Path | str] = None, **kwargs) -> None | str:
         """Write to JSON format.
 
         The preferred way to save data is to use the `save` method, which updates the
@@ -514,7 +522,7 @@ class _SerialisationMixin(_IdentificationMixin, DataClassJsonMixin):
     def load(
         cls,
         participant_id: str,
-        experiment_id: str | None = None,
+        experiment_id: Optional[str] = None,
     ) -> "_SerialisationMixin":
         """Load an instance of this dataclass from a JSON file at the default path.
 
@@ -645,15 +653,12 @@ class Participant(_SerialisationMixin, _ParReqFieldsMixin):
 
     """
 
-    dob: date | None = field(default=None, **kw, metadata=config(
-            encoder=lambda x: date.isoformat(x) if x is not None else None,
-            decoder=lambda x: date.fromisoformat(x) if x is not None else None,
-    ))  # not `datetime.date` ... see note!
-    age: float | int | None = field(default=None, **kw)
-    gender: str | None = field(default=None, **kw)
-    language: str | None = field(default=None, **kw)
-    comments: str | None = field(default=None, **kw)
-    group: str | None = field(default=None, **kw)
+    dob: Optional[date] = field(default=None, **kw)  # not `datetime.date` ... see note!
+    age: Optional[float | int] = field(default=None, **kw)
+    gender: Optional[str] = field(default=None, **kw)
+    language: Optional[str] = field(default=None, **kw)
+    comments: Optional[str] = field(default=None, **kw)
+    group: Optional[str] = field(default=None, **kw)
     temporary_participant: bool = field(default=False, **kw)
 
     def __post_init__(self):
@@ -736,11 +741,11 @@ class _StatusMixin(LogMixin):
     current_status: str = field(default="pending", **kw)
     status_history: list[dict[str, str | dt]] = field(default_factory=list, **kw)
     event_history: list[dict[str, str | dt]] = field(default_factory=list, **kw)
-    datetime_started: dt | None = field(default=None, **kw)
-    datetime_finished: dt | None = field(default=None, **kw)
+    datetime_started: Optional[dt] = field(default=None, **kw)
+    datetime_finished: Optional[dt] = field(default=None, **kw)
     datetimes_paused: list[tuple[dt, dt]] = field(default_factory=list, **kw)
-    datetime_last_paused: dt | None = field(default=None, **kw)
-    duration: float | None = field(default=None, **kw)
+    datetime_last_paused: Optional[dt] = field(default=None, **kw)
+    duration: Optional[float] = field(default=None, **kw)
 
     @property
     def is_pending(self) -> bool:
@@ -848,7 +853,7 @@ class _StatusMixin(LogMixin):
             logger.debug("Updating datetime_last_paused")
             self.datetime_last_paused = then
 
-    def get_duration(self) -> float | None:
+    def get_duration(self) -> Optional[float]:
         """Return the duration in seconds.
 
         If not finished, returns None. If finished, returns datetime_finished minus
@@ -904,12 +909,12 @@ class Trial(_IdentificationMixin, _StatusMixin, LogMixin, DataClassJsonMixin):
 
     """
 
-    stimulus: str | list | float | int | dict | set | None = None
-    response: str | list | float | int | dict | set | None = None
-    reaction_time: float | None = None
-    trial_number: int | None = None
-    block_number: int | None = None
-    condition: str | None = None
+    stimulus: Optional[str | list | float | int | dict | set] = None
+    response: Optional[str | list | float | int | dict | set] = None
+    reaction_time: Optional[float] = None
+    trial_number: Optional[int] = None
+    block_number: Optional[int] = None
+    condition: Optional[str] = None
     practice: bool = False
 
 
@@ -984,9 +989,9 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
 
     """
 
-    trial_index: int | None = field(default=None, **kw)
+    trial_index: Optional[int] = field(default=None, **kw)
     trials: list[Trial] = field(default_factory=list, **kw)
-    summary: dict[str, int | float | dt | str] | None = field(default=None, **kw)
+    summary: Optional[dict[str, int | float | dt | str]] = field(default=None, **kw)
 
     def __post_init__(self):
         super().__post_init__()
@@ -1026,7 +1031,7 @@ class Experiment(_SerialisationMixin, _StatusMixin, _ExpReqFieldsMixin):
             self.pause()
 
     @property
-    def current_trial(self) -> Trial | None:
+    def current_trial(self) -> Optional[Trial]:
         return self.trials[self.trial_index]
 
     @property
